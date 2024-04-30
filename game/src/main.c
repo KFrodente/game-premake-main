@@ -12,7 +12,7 @@
 int main(void)
 {
 	InitWindow(1280, 720, "Physics Engine");
-	SetTargetFPS(120);
+	SetTargetFPS(60);
 
 	//game loop
 	while (!WindowShouldClose())
@@ -26,8 +26,9 @@ int main(void)
 		Vector2 position = GetMousePosition();
 		if (IsMouseButtonDown(0))
 		{
-			Body* body = CreateBody();
-			body->velocity = CreateVector2(GetRandomFloatValue(-5, 5), GetRandomFloatValue(-5, 5));
+			CreateBody();
+			bodies->position = position;
+			bodies->velocity = CreateVector2(GetRandomFloatValue(-500, 500), GetRandomFloatValue(-500, 500));
 		}
 
 		//render
@@ -44,7 +45,7 @@ int main(void)
 		while (body) // do while we have a valid pointer, will be NULL at the end of the list
 		{
 			// update body position
-			body->position = Vector2Add(body->position, body->velocity);
+			body->position = Vector2Add(body->position, Vector2Multiply(body->velocity, CreateVector2(dt, dt)));
 			// draw body
 			DrawCircle((int)body->position.x, (int)body->position.y, 3, RED);
 
@@ -55,7 +56,6 @@ int main(void)
 		EndDrawing();
 	}
 	CloseWindow();
-	free(bodies);
 
 	return 0;
 }
