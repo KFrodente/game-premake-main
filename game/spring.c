@@ -47,6 +47,23 @@ void DestroySpring(dlSpring_t* spring)
 	free(spring);
 }
 
+void DestroyAllSprings()
+{
+	if (!dlSprings) return;
+	dlSpring_t* spring = dlSprings;
+	dlSpring_t* temp;
+
+	while (spring)
+	{
+		temp = spring->next;
+		free(spring);
+		spring = temp;
+	}
+	dlSprings = NULL;
+}
+
+
+
 void ApplySpringForce(dlSpring_t* springs)
 {
 	for (dlSpring_t* spring = springs; spring; spring = spring->next)

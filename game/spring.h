@@ -16,6 +16,6 @@ extern dlSpring_t* dlSprings;
 dlSpring_t* CreateSpring(struct dlBody* body1, struct dlBody* body2, float restLength, float k);
 void AddSpring(dlSpring_t* spring);
 void DestroySpring(dlSpring_t* spring);
-void DestroyAllBodies();
+void DestroyAllSprings();
 
 void ApplySpringForce(dlSpring_t* spring);

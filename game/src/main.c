@@ -47,6 +47,13 @@ int main(void)
 
 		UpdateEditor(position);
 
+		if (dlEditorData.ResetPressed)
+		{
+			DestroyAllBodies();
+			DestroyAllSprings();
+		}
+
+
 		selectedBody = GetBodyIntersect(dlBodies, position);
 		if (selectedBody)
 		{
@@ -64,11 +71,11 @@ int main(void)
 				for (int i = 0; i < bodyCount; i++)
 				{
 					dlBody* body = CreateBody(ConvertScreenToWorld(position), dlEditorData.MassValue, dlEditorData.BodyType);
-					body->damping = 0;//0.5f;
+					body->damping = dlEditorData.DampingValue;
 					body->gravityScale = dlEditorData.GravityScale;
 					body->HSV = (Vector3){ GetRandomFloatValue(1, 255), GetRandomFloatValue(200, 255) , 1.0f };
 
-					body->restitution = 0.3f;
+					body->restitution = dlEditorData.RestitutionValue;
 					AddBody(body);
 				}
 			}
@@ -81,6 +88,23 @@ int main(void)
 			if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && connectBody)
 			{
 				DrawLineBodyToPosition(connectBody, position);
+				if (IsKeyDown(KEY_LEFT_SHIFT) && dlEditorData.SimulateActive)
+				{
+					Vector2 direction = Vector2Subtract(ConvertScreenToWorld(position), connectBody->position);
+					if (direction.x != 0 || direction.y != 0)
+					{
+
+						float length = Vector2Length(direction);
+						float x = length - 1;
+						float force = x * dlEditorData.StiffnessValue;
+
+						Vector2 ndirection = Vector2Normalize(direction);
+
+						ApplyForce(connectBody, Vector2Scale(ndirection, force), FM_FORCE);
+						connectBody->velocity =  Vector2Scale(connectBody->velocity, 0.97f);
+
+					}
+				}
 			}
 			if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT) && connectBody)
 			{
@@ -94,8 +118,6 @@ int main(void)
 
 
 
-		ApplyGravitation(dlBodies,  dlEditorData.GravitationValue);
-		ApplySpringForce(dlSprings);
 
 
 		if (dlEditorData.SimulateActive)
@@ -110,6 +132,8 @@ int main(void)
 				{
 					Step(body, fixedTimestep);
 				}
+				ApplyGravitation(dlBodies,  dlEditorData.GravitationValue);
+				ApplySpringForce(dlSprings);
 				// collision
 				contacts = NULL;
 				CreateContacts(dlBodies, &contacts);
@@ -117,7 +141,6 @@ int main(void)
 				ResolveContacts(contacts);
 			}
 		}
-
 		// render
 		BeginDrawing();
 		ClearBackground(BLACK);

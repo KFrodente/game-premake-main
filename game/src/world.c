@@ -59,3 +59,18 @@ void DestroyBody(dlBody* body)
 	//Free the body
 	free(body);
 }
+
+void DestroyAllBodies()
+{
+	if (!dlBodies) return;
+	dlBody* body = dlBodies;
+	dlBody* temp;
+
+	while (body)
+	{
+		temp = body->next;
+		free(body);
+		body = temp;
+	}
+	dlBodies = NULL;
+}
