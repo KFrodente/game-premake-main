@@ -66,13 +66,11 @@ int main(void)
 					dlBody* body = CreateBody(ConvertScreenToWorld(position), dlEditorData.MassValue, dlEditorData.BodyType);
 					body->damping = 0;//0.5f;
 					body->gravityScale = dlEditorData.GravityScale;
-					//body->color = ColorFromHSV(0, GetRandomFloatValue01(), GetRandomFloatValue01());
 					body->HSV = (Vector3){ GetRandomFloatValue(1, 255), GetRandomFloatValue(200, 255) , 1.0f };
 
 					body->restitution = 0.3f;
 					AddBody(body);
 				}
-				//CreateRandomFirework(position);
 			}
 
 			// connect spring
@@ -119,14 +117,6 @@ int main(void)
 				ResolveContacts(contacts);
 			}
 		}
-
-		////// update bodies
-		//for (dlBody* body = dlBodies; body; body = body->next)
-		//{
-		//	Step(body, fixedTimestep);
-		//}
-
-
 
 		// render
 		BeginDrawing();
